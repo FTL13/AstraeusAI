@@ -15,7 +15,7 @@ var eyes = '👀';
 
 var lastMerge = 0;
 
-var {channels, server_comms_key, bot_key} = require('./config.js'); 
+var {channels, server_comms_key, bot_key, database} = require('./config.js'); 
 
 bot.on('message', function(msg)
 {
@@ -241,7 +241,7 @@ function handleHttpRequest(request, response) {
 }
 
 function connectToMysql() {
-    return mysql.createConnection({host:'127.0.0.1',user:'banlist',password:'G2ptWeK6',database:'feedback'})
+    return mysql.createConnection(database)
 }
 
 var http_server = http.createServer(handleHttpRequest);
