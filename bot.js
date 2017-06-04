@@ -25,7 +25,7 @@ bot.on('message', function(msg)
     {
         msg.reply('You best not be talking about me, you little punk.');
     }
-    if(smsg.search(eyes + "covfefe"))
+    if(msg.content.startsWith(eyes + "covfefe"))
     {
         msg.reply('Reeee covfefe is dead');
     }
@@ -40,7 +40,7 @@ bot.on('message', function(msg)
     if(smsg.search(/(could|would|should|may|might) +of +(?!course)/i) >= 0) {
         msg.reply('It\'s could HAVE or would HAVE, never could *of* or would *of*');
     }
-    if(smsg.search(eyes + "status"))
+    if(msg.content.startsWith(eyes + "status"))
     {
         http2byond({'ip':'ftl13.com','port':'7777','topic':'?status'}, function(body, err) {
             if(err) { msg.reply(err); } else {
