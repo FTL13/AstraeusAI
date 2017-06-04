@@ -25,13 +25,17 @@ bot.on('message', function(msg)
     {
         msg.reply('You best not be talking about me, you little punk.');
     }
+    if(msg.content.startsWith(eyes + "covfefe"))
+    {
+        msg.reply('Reeee covfefe is dead');
+    }
     if(smsg.search(/ftl station/i) >= 0)
     {
         msg.reply('Reeee its a ship not a station get it right');
     }
     if(msg.content.startsWith(eyes + "help"))
     {
-        msg.reply('Fuck off, I\'m not helping you.');
+        msg.reply('Commands are started with the eyes emote, followed by the command name. You ain\'t getting any more help out of me, you fuck.');
     }
     if(smsg.search(/(could|would|should|may|might) +of +(?!course)/i) >= 0) {
         msg.reply('It\'s could HAVE or would HAVE, never could *of* or would *of*');
