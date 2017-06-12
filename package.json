@@ -4,15 +4,18 @@
   "description": "",
   "main": "bot.js",
   "dependencies": {
+    "async": "^2.4.1",
+    "bufferutil": "^3.0.1",
     "discord.js": "^11.1.0",
-    "erlpack": "^0.1.0",
-    "flow.js": "^0.2.6",
+    "erlpack": "github:hammerandchisel/erlpack",
     "http2byond": "^1.0.4",
+    "libsodium-wrappers": "^0.5.1",
     "mysql2": "^1.2.0",
-    "node-opus": "^0.2.4",
-    "opusscript": "^0.0.1",
+    "node-opus": "^0.2.6",
+    "opusscript": "0.0.3",
+    "sodium": "^2.0.1",
     "strict-mode": "^1.0.1",
-    "uws": "^0.12.0"
+    "uws": "^0.14.5"
   },
   "devDependencies": {},
   "scripts": {

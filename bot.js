@@ -1,10 +1,11 @@
 var Discord = require("discord.js");
+var util = require('util');
 var http = require('http');
 var querystring = require('querystring');
 var crypto = require('crypto');
 var net = require('net');
-var flow = require('flow.js');
-var exec = require('child_process').exec;
+var async = require('async');
+var exec = util.promisify(require('child_process').exec);
 var sys = require('util');
 var fs = require('fs');
 var http2byond = require('http2byond');
@@ -91,34 +92,33 @@ function sendServerMessage(message) {
 
 function execRepo(command, callback) {
     console.log('$ ' + command);
-    exec(command, {cwd: "/home/monster860/discord_bot/FTL13"}, callback);
+    return exec(command, {cwd: "./FTL13"});
 }
 
 var isClIng = 0;
 
-function genchangelogs(bodies) {
+async function genchangelogs(bodies) {
     if(isClIng)
         return;
     isClIng = 1;
-    flow.exec(function() {
-        execRepo('git fetch --all', this);
-    }, function(error, stdout, stderr) {
-        console.log(stdout + "\n" + stderr);
-        execRepo('git reset --hard origin/master', this);
-    }, function() {
-        var hasClEd = 0;
-        console.log('Generating CL files...');
-        for(var i = 0; i < bodies.length; i++) {
-            var body = bodies[i].replace(/\r/g, '');
+    var {stdout, stderr} = await execRepo('git fetch --all');
+    console.log(stdout + "\n" + stderr);
+    ({stdout, stderr} = await execRepo('git reset --hard origin/master'));
+    var hasClEd = 0;
+    console.log('Generating CL files...');
+    await new Promise((resolve, reject) => {
+        async.each(bodies, (body, callback) => {
+            body = body.replace(/\r/g, '');
             console.log('Parsing: ' + body);
             var result = /:cl:[ \t]*(.*)\n([\w\W]+)\/:cl:/.exec(body);
             if(!result)
-                continue;
+                return callback();
             hasClEd = 1;
             var author = result[1];
             var changelog = result[2];
             var pieces = changelog.match(/^(fix|fixes|bugfix|wip|rsctweak|tweaks|tweak|soundadd|sounddel|add|adds|rscadd|del|dels|rscdel|imageadd|imagedel|typo|spellcheck|experimental|experiment|tgs):[ \t]*(.*)$/gm);
             var toOutput = 'author: ' + author + '\ndelete-after: True\nchanges:\n';
+            if(!pieces) return callback();
             for(var j = 0; j < pieces.length; j++) {
                 var keyval = /^(fix|fixes|bugfix|wip|rsctweak|tweaks|tweak|soundadd|sounddel|add|adds|rscadd|del|dels|rscdel|imageadd|imagedel|typo|spellcheck|experimental|experiment|tgs):[ \t]*(.*)$/gm.exec(pieces[j]);
                 if(!keyval)
@@ -140,26 +140,21 @@ function genchangelogs(bodies) {
             }
             console.log(toOutput);
             
-            fs.writeFile("/home/monster860/discord_bot/FTL13/html/changelogs/AutoChangeLog-" + i + ".yml", toOutput, this.MULTI());
-        }
-        if(!hasClEd)
-            isClIng = 0;
-    }, function(error, stdout, stderr) {
-        console.log(stdout + "\n" + stderr);
-        execRepo("python tools/ss13_genchangelog.py html/changelog.html html/changelogs", this);
-    }, function(error, stdout, stderr) {
-        console.log(stdout + "\n" + stderr);
-        execRepo("git add -A", this);
-    }, function(error, stdout, stderr) {
-        console.log(stdout + "\n" + stderr);
-        execRepo("git commit -m \"Automated Changelog [ci skip]\"", this);
-    }, function(error, stdout, stderr) {
-        console.log(stdout + "\n" + stderr);
-        execRepo("git push", this);
-    }, function(error, stdout, stderr) {
-        console.log(stdout + "\n" + stderr);
-        isClIng = 0;
+            fs.writeFile("./FTL13/html/changelogs/AutoChangeLog-" + i + ".yml", toOutput, callback);
+        }, () => {resolve();});
     });
+    if(!hasClEd)
+        isClIng = 0;
+    console.log(stdout + "\n" + stderr);
+    ({stdout, stderr} = await execRepo("python tools/ss13_genchangelog.py html/changelog.html html/changelogs"));
+    console.log(stdout + "\n" + stderr);
+    ({stdout, stderr} = await execRepo("git add -A"));
+    console.log(stdout + "\n" + stderr);
+    ({stdout, stderr} = await execRepo("git commit -m \"Automated Changelog [ci skip]\""));
+    console.log(stdout + "\n" + stderr);
+    ({stdout, stderr} = await execRepo("git push"));
+    console.log(stdout + "\n" + stderr);
+    isClIng = 0;
 }
 
 function prMessage(type, username, usericon, title, num, url, action, actiondoer)
@@ -201,7 +196,9 @@ function handleHttpRequest(request, response) {
                         queryObj.action = 'merged';
                         var date = new Date()
                         lastMerge = date.getTime();
-                        genchangelogs([queryObj.pull_request.body]);
+                        genchangelogs([queryObj.pull_request.body]).catch(err => {
+                            bot.channels.get(channels.coderbus).sendMessage('Error while generating changelogs: ' + (err.stack ? err.stack : err));
+                        });
                     }
                     prMessage("Pull request", queryObj.pull_request.user.login, queryObj.pull_request.user.avatar_url, queryObj.pull_request.title, queryObj.pull_request.number, queryObj.pull_request.html_url, queryObj.action, queryObj.sender.login);
                     sendServerMessage('Pull request ' + queryObj.action + ' by ' + queryObj.sender.login + ' <a href="' + queryObj.pull_request.html_url + '">' + queryObj.pull_request.title + '</a>');
