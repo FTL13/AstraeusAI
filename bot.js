@@ -205,6 +205,7 @@ function handleHttpRequest(request, response) {
                 }
             }
             if(queryObj.commits) {
+                if(queryObj.ref != "refs/heads/master") return; // Only track master
                 var date = new Date()
                 if(date.getTime() > (lastMerge + 1000)) {
                     var commitmsgs = []
