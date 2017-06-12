@@ -11,7 +11,9 @@ var http2byond = require('http2byond');
 var mysql = require('mysql2');
 
 var bot = new Discord.Client();
-var eyes = ['👀','👁️‍🗨️','👁️'];
+var eyes = '👀';
+var eyes2 = '👁️•🗨️';
+var eyes3 = '👁️';
 
 var lastMerge = 0;
 
@@ -25,7 +27,7 @@ bot.on('message', function(msg)
     {
         msg.reply('You best not be talking about me, you little punk.');
     }
-    if(msg.content.startsWith(eyes + "covfefe"))
+    if(msg.content.startsWith(eyes + "covfefe" || eyes2 + "covfefe" || eyes3 + "covfefe"))
     {
         msg.reply('Reeee covfefe is dead');
     }
@@ -33,14 +35,14 @@ bot.on('message', function(msg)
     {
         msg.reply('Reeee its a ship not a station get it right');
     }
-    if(msg.content.startsWith(eyes + "help"))
+    if(msg.content.startsWith(eyes + "help" || eyes2 + "help" || eyes3 + "help"))
     {
         msg.reply('Commands are started with the eyes emote, followed by the command name. You ain\'t getting any more help out of me, you fuck.');
     }
     if(smsg.search(/(could|would|should|may|might) +of +(?!course)/i) >= 0) {
         msg.reply('It\'s could HAVE or would HAVE, never could *of* or would *of*');
     }
-    if(msg.content.startsWith(eyes + "status"))
+    if(msg.content.startsWith(eyes + "status" || eyes2 + "status" || eyes3 + "status"))
     {
         http2byond({'ip':'ftl13.com','port':'7777','topic':'?status'}, function(body, err) {
             if(err) { msg.reply(err); } else {
@@ -53,12 +55,12 @@ bot.on('message', function(msg)
     }
     var fulladmin = msg.member && msg.member.hasPermission("ADMINISTRATOR");
     var admin = msg.member && msg.member.hasPermission("BAN_MEMBERS");
-    if(msg.content.startsWith(eyes + "embed") && fulladmin)
+    if(msg.content.startsWith(eyes + "embed" || eyes2 + "embed" || eyes3 + "embed") && fulladmin)
     {
         msg.channel.sendEmbed(new Discord.RichEmbed(JSON.parse(msg.content.substring(7))), "");
     }
     
-    if(msg.content.startsWith(eyes + "notes") && admin)
+    if(msg.content.startsWith(eyes + "notes" || eyes2 + "notes" || eyes3 + "notes") && admin)
     {
         var culprit = msg.content.substring(7).trim().toLowerCase();
         var connection = connectToMysql();
