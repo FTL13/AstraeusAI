@@ -11,7 +11,7 @@ var http2byond = require('http2byond');
 var mysql = require('mysql2');
 
 var bot = new Discord.Client();
-var eyes = '👀';
+var eyes = ['👀','👁️‍🗨️','👁️'];
 
 var lastMerge = 0;
 
