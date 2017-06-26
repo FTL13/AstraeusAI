@@ -191,7 +191,7 @@ function handleHttpRequest(request, response) {
                 }
             }
             if(queryObj.pull_request) {
-                if(queryObj.action == 'opened' || queryObj.action == 'closed' || queryObj.action == 'reopened') {
+                if((queryObj.action == 'opened' || queryObj.action == 'closed' || queryObj.action == 'reopened') && queryObj.pull_request.user.login != 'FTL13-Bot') {
                     if(queryObj.action == 'closed' && queryObj.pull_request.merged) {
                         queryObj.action = 'merged';
                         var date = new Date()
