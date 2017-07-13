@@ -111,7 +111,7 @@ async function genchangelogs(bodies) {
         async.each(bodies, (body, callback) => {
             body = body.replace(/\r/g, '');
             console.log('Parsing: ' + body);
-            var result = /:cl:[ \t]*(.*)\n([\w\W]+)\/:cl:/.exec(body);
+            var result = /(?:🆑|:cl:)[ \t]*(.*)\n([\w\W]+)\/(?:🆑|:cl:)/.exec(body);
             if(!result)
                 return callback();
             hasClEd = 1;
@@ -145,8 +145,10 @@ async function genchangelogs(bodies) {
             i++;
         }, () => {resolve();});
     });
-    if(!hasClEd)
+    if(!hasClEd) {
         isClIng = 0;
+        return;
+    }
     console.log(stdout + "\n" + stderr);
     ({stdout, stderr} = await execRepo("python tools/ss13_genchangelog.py html/changelog.html html/changelogs"));
     console.log(stdout + "\n" + stderr);
