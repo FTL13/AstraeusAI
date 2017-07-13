@@ -106,6 +106,7 @@ async function genchangelogs(bodies) {
     ({stdout, stderr} = await execRepo('git reset --hard origin/master'));
     var hasClEd = 0;
     console.log('Generating CL files...');
+    var i = 0;
     await new Promise((resolve, reject) => {
         async.each(bodies, (body, callback) => {
             body = body.replace(/\r/g, '');
@@ -141,6 +142,7 @@ async function genchangelogs(bodies) {
             console.log(toOutput);
             
             fs.writeFile("./FTL13/html/changelogs/AutoChangeLog-" + i + ".yml", toOutput, callback);
+            i++;
         }, () => {resolve();});
     });
     if(!hasClEd)
