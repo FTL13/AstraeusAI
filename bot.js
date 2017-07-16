@@ -1,3 +1,4 @@
+
 var Discord = require("discord.js");
 var util = require('util');
 var http = require('http');
@@ -22,6 +23,10 @@ bot.on('message', function(msg)
 {
     console.log(msg.content)
     var smsg = " " + msg.content + " "
+    if(msg.content.startsWith('"'))
+    {
+        return;
+    }
     if(smsg.search(/[\t !?\.,\-_\*]@?ast(raeus|reaus)?[\t !?\.,\-_\*]/i) >= 0)
     {
         msg.reply('You best not be talking about me, you little punk.');
