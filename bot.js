@@ -48,7 +48,7 @@ bot.on('message', function(msg)
             body = ''+body;
             dataObj = querystring.parse(body);
             var roundDuration = (Math.floor(dataObj.round_duration/3600)+12)+":"+(Math.floor(dataObj.round_duration/60)%60)
-            msg.channel.sendEmbed(new Discord.RichEmbed({"fields":[{"name":"Version","value":dataObj.version,"inline":1},{"name":"Map","value":dataObj.map_name,"inline":1},{"name":"Mode","value":dataObj.mode,"inline":1},{"name":"Players","value":""+dataObj.players,"inline":1},{"name":"Admins","value":""+dataObj.admins,"inline":1},{"name":"Round duration","value":roundDuration,"inline":1}],"color":34952}));
+            msg.channel.sendEmbed(new Discord.RichEmbed({"fields":[{"name":"Version","value":dataObj.version,"inline":1},{"name":"Map","value":dataObj.map_name,"inline":1},{"name":"Mode","value":dataObj.mode,"inline":1},{"name":"Players","value":""+dataObj.players-1,"inline":1},{"name":"Admins","value":""+dataObj.admins,"inline":1},{"name":"Round duration","value":roundDuration,"inline":1}],"color":34952}));
             }
         });
     }
