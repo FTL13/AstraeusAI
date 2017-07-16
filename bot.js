@@ -10,6 +10,7 @@ var sys = require('util');
 var fs = require('fs');
 var http2byond = require('http2byond');
 var mysql = require('mysql2');
+var admin = msg.member && msg.member.hasPermission("BAN_MEMBERS");
 
 var bot = new Discord.Client();
 var eyes = '👀';
@@ -24,7 +25,12 @@ bot.on('message', function(msg)
     var smsg = " " + msg.content + " "
     if(smsg.search(/[\t !?\.,\-_\*]@?ast(raeus|reaus)?[\t !?\.,\-_\*]/i) >= 0)
     {
-        msg.reply('You best not be talking about me, you little punk.');
+        if(admin)
+        {
+            return;
+        } else {
+            msg.reply('You best not be talking about me, you little punk.');
+        }
     }
     if(msg.content.startsWith(eyes + "covfefe"))
     {
