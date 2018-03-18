@@ -67,14 +67,14 @@ bot.on('message', function(msg)
     {
         var culprit = msg.content.substring(7).trim().toLowerCase();
         var connection = connectToMysql();
-        connection.execute('SELECT timestamp, server, adminckey, notetext FROM notes WHERE ckey = ?', [culprit], function(err, results) {
+        connection.execute('SELECT timestamp, server, adminckey, text, type, secret FROM messages WHERE targetckey = ?', [culprit], function(err, results) {
             if(err) {
                 bot.channels.get(channels.executivedecisions).sendMessage(JSON.stringify('Error fetching notes for ' + culprit + ': ' + JSON.stringify(err)));
             } else {
                 var notesstring = "";
                 for(var i = 0; i < results.length; i++) {
                     var row = results[i];
-                    notesstring += "**" + row.timestamp + " | " + row.server + " | " + row.adminckey + "**\n" + row.notetext + "\n\n";
+                    notesstring += "**" + row.timestamp + " | " + row.server + "**\n**" + row.type + " by " + row.adminckey + "(" + (+row.secret ? "secret" : "not secret") + ")" + "**\n" + row.text + "\n\n";
                 }
                 bot.channels.get(channels.executivedecisions).sendEmbed(new Discord.RichEmbed({"title": "Notes for " + culprit + ":", "description": notesstring, "color": 0xff4444}));
             }
