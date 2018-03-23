@@ -28,7 +28,7 @@ bot.on('message', function(msg)
     }
     else if(smsg.search(/(will|is) (the )?server( be)? up/i) >= 0)
     {
-        msg.reply('Read the faq. You know what the most frequently asked question is on a ss13 server\'s discord? It\'s "*(when) is the* *server* *up*?". You know whaere you can find the answers to frequently asked questions? The faq channel.');
+        msg.reply('Read the faq. You know what the most frequently asked question is on a ss13 server\'s discord? It\'s "*(when) is the* *server* *up*?". You know where you can find the answers to frequently asked questions? The faq channel.');
     }
     else if(msg.content.startsWith(eyes + "covfefe"))
     {
