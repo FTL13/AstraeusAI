@@ -48,19 +48,21 @@ bot.on('message', function(msg)
     else if(msg.content.startsWith(eyes + "status"))
     {
         http2byond({'ip':'ftl13.com','port':'7777','topic':'?status'}, function(body, err) {
-            if(err) { msg.reply(err); } else {
+            if(err) { msg.reply(err+""); } else {
             body = ''+body;
             dataObj = querystring.parse(body);
             var roundDuration = (Math.floor(dataObj.round_duration/3600)+12)+":"+(Math.floor(dataObj.round_duration/60)%60)
-            msg.channel.sendEmbed(new Discord.RichEmbed({"fields":[{"name":"Version","value":dataObj.version,"inline":1},{"name":"Map","value":dataObj.map_name,"inline":1},{"name":"Mode","value":dataObj.mode,"inline":1},{"name":"Players","value":""+dataObj.players,"inline":1},{"name":"Admins","value":""+dataObj.admins,"inline":1},{"name":"Round duration","value":roundDuration,"inline":1}],"color":34952}));
+            msg.channel.sendEmbed(new Discord.RichEmbed({"fields":[{"name":"Version","value":dataObj.version,"inline":1},{"name":"Map","value":dataObj.map_name,"inline":1},{"name":"Mode","value":dataObj.mode,"inline":1},{"name":"Players","value":""+dataObj.players,"inline":1},{"name":"Admins","value":""+dataObj.admins,"inline":1},{"name":"Round duration","value":roundDuration,"inline":1},{"name":"Server Link","value":"[byond://ftl13.com:7777](https://ftl13.com/play.php)",inline:0}],"color":34952}));
             }
         });
     }
     var fulladmin = msg.member && msg.member.hasPermission("ADMINISTRATOR");
     var admin = msg.member && msg.member.hasPermission("BAN_MEMBERS");
-    if(msg.content.startsWith(eyes + "embed") && fulladmin)
+    if(msg.content.startsWith(eyes + "embed") && admin)
     {
-        msg.channel.sendEmbed(new Discord.RichEmbed(JSON.parse(msg.content.substring(7))), "");
+        try {
+            msg.channel.sendEmbed(new Discord.RichEmbed(JSON.parse(msg.content.substring(7).replace(/0x[a-fA-F0-9]*/i, (n)=>{return parseInt(n, 16);}))), "").catch(e => {msg.reply(""+e);});
+        } catch(e) {msg.reply(""+e);}
     }
     
     if(msg.content.startsWith(eyes + "notes") && admin)
@@ -72,11 +74,12 @@ bot.on('message', function(msg)
                 bot.channels.get(channels.executivedecisions).sendMessage(JSON.stringify('Error fetching notes for ' + culprit + ': ' + JSON.stringify(err)));
             } else {
                 var notesstring = "";
+                var embed =  new Discord.RichEmbed({"title": "Notes for " + culprit + ":", "description": "", "color": 0xff4444});
                 for(var i = 0; i < results.length; i++) {
                     var row = results[i];
-                    notesstring += "**" + row.timestamp + " | " + row.server + "**\n**" + row.type + " by " + row.adminckey + "(" + (+row.secret ? "secret" : "not secret") + ")" + "**\n" + row.text + "\n\n";
+                    embed.addField("---", "**" + row.timestamp + " | " + row.server + "**\n**" + row.type + " by " + row.adminckey + "(" + (+row.secret ? "secret" : "not secret") + ")" + "**\n" + row.text + "\n\n");
                 }
-                bot.channels.get(channels.executivedecisions).sendEmbed(new Discord.RichEmbed({"title": "Notes for " + culprit + ":", "description": notesstring, "color": 0xff4444}));
+                bot.channels.get(channels.executivedecisions).send('', {embed});
             }
         });
         connection.end();
