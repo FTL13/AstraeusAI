@@ -239,8 +239,11 @@ function handleHttpRequest(request, response) {
                 var announceChannel = channels.ss13;
                 if(dataObj.announce_channel) {
                     if(dataObj.announce_channel == 'admin') announceChannel = channels.executivedecisions;
+                    bot.channels.get(announceChannel).sendEmbed(new Discord.RichEmbed({"title":dataObj.ticket_holder,"description":dataObj.announce}));
                 }
-                bot.channels.get(announceChannel).sendMessage(dataObj.announce);
+                else {
+                    bot.channels.get(announceChannel).sendMessage(dataObj.announce);
+                }
             } else if(dataObj.serverStart && dataObj.key && dataObj.key.trim() === server_comms_key.trim()) {
                 bot.channels.get(channels.ss13).sendEmbed(new Discord.RichEmbed({"title":"Server is starting!","description":"[byond://ftl13.com:7777](https://ftl13.com/play.php)"}));
             }
