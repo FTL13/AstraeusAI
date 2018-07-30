@@ -171,10 +171,12 @@ async function genchangelogs(bodies) {
 function prMessage(type, username, usericon, title, num, url, action, actiondoer)
 {
     var color = 0xffffff
-    if((type == "Pull request" && action == "merged") || (type == "Issue" && action == "closed")) {
-        color = 0x44cc44
-    } else if(type == "Pull request" && action == "closed") {
-        color = 0xcc4444
+    if((type == "Pull request" && action == "opened") || (type == "Issue" && action == "opened")){
+        color = 0X2CBE4E
+    }else if(type == "Pull request" && action == "merged") {
+        color = 0x6F42C1
+    } else if((type == "Pull request" && action == "closed") || (type == "Issue" && action == "closed")) {
+        color = 0xCB2431
     }
     bot.channels.get(channels.coderbus).sendEmbed(new Discord.RichEmbed({"author":{"name":username,"icon_url":usericon},"url":url,"title":"(#"+num+") "+title,"description":type+" "+action+" by "+actiondoer,"thumbnail":{"url":"http://i.imgur.com/YXHL3Gd.png"},"color":color}));
 }
