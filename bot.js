@@ -47,12 +47,12 @@ bot.on('message', function(msg)
     }
     else if(msg.content.startsWith(eyes + "status"))
     {
-        http2byond({'ip':'ftl13.com','port':'7777','topic':'?status'}, function(body, err) {
+        http2byond({'ip':'stable.ftl13.com','port':'7777','topic':'?status'}, function(body, err) {
             if(err) { msg.reply(err+""); } else {
             body = ''+body;
             dataObj = querystring.parse(body);
             var roundDuration = (Math.floor(dataObj.round_duration/3600)+12)+":"+(Math.floor(dataObj.round_duration/60)%60)
-            msg.channel.sendEmbed(new Discord.RichEmbed({"fields":[{"name":"Version","value":dataObj.version,"inline":1},{"name":"Map","value":dataObj.map_name,"inline":1},{"name":"Mode","value":dataObj.mode,"inline":1},{"name":"Players","value":""+dataObj.players,"inline":1},{"name":"Admins","value":""+dataObj.admins,"inline":1},{"name":"Round duration","value":roundDuration,"inline":1},{"name":"Server Link","value":"[byond://ftl13.com:7777](https://ftl13.com/play.php)",inline:0}],"color":34952}));
+            msg.channel.sendEmbed(new Discord.RichEmbed({"fields":[{"name":"Version","value":dataObj.version,"inline":1},{"name":"Map","value":dataObj.map_name,"inline":1},{"name":"Mode","value":dataObj.mode,"inline":1},{"name":"Players","value":""+dataObj.players,"inline":1},{"name":"Admins","value":""+dataObj.admins,"inline":1},{"name":"Round duration","value":roundDuration,"inline":1},{"name":"Server Link","value":"[byond://stable.ftl13.com:7777](https://ftl13.com/play.php)",inline:0}],"color":34952}));
             }
         });
     }
@@ -94,7 +94,7 @@ bot.login(bot_key);
 
 function sendServerMessage(message) {
     var request = '?key=' + server_comms_key + '&announce=' + message;
-    http2byond({'ip':'ftl13.com','port':'7777','topic':request},function(body,err){});
+    http2byond({'ip':'stable.ftl13.com','port':'7777','topic':request},function(body,err){});
 }
 
 function execRepo(command, callback) {
@@ -167,7 +167,7 @@ async function genchangelogs(bodies) {
     console.log(stdout + "\n" + stderr);
     isClIng = 0;
 }
-
+/*
 function prMessage(type, username, usericon, title, num, url, action, actiondoer)
 {
     var color = 0xffffff
@@ -180,7 +180,7 @@ function prMessage(type, username, usericon, title, num, url, action, actiondoer
     }
     bot.channels.get(channels.coderbus).sendEmbed(new Discord.RichEmbed({"author":{"name":username,"icon_url":usericon},"url":url,"title":"(#"+num+") "+title,"description":type+" "+action+" by "+actiondoer,"thumbnail":{"url":"http://i.imgur.com/YXHL3Gd.png"},"color":color}));
 }
-
+*/
 // Github Webhook
 
 function handleHttpRequest(request, response) {
@@ -247,7 +247,7 @@ function handleHttpRequest(request, response) {
                 }
                 bot.channels.get(announceChannel).sendMessage(dataObj.announce);
             } else if(dataObj.serverStart && dataObj.key && dataObj.key.trim() === server_comms_key.trim()) {
-                bot.channels.get(channels.ss13).sendEmbed(new Discord.RichEmbed({"title":"Server is starting!","description":"[byond://ftl13.com:7777](https://ftl13.com/play.php)"}));
+                bot.channels.get(channels.ss13).sendEmbed(new Discord.RichEmbed({"title":"Server is starting!","description":"[byond://stable.ftl13.com:7777](https://ftl13.com/play.php)"}));
             }
         }
         response.writeHead(405, {'Content-Type': 'text/plain'});
